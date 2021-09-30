@@ -111,7 +111,7 @@ function App(props) {
     }, []);
 
     const menu = [
-        { title: "Upload Docx", path: "docx", icon: <GTranslate />}
+        { title: "Copy Srt", path: "docx", icon: <GTranslate />}
     ];
 
     const routeObj = [

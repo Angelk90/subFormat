@@ -40,22 +40,16 @@ export default function Copy({ darkState }) {
             </h1>
 
             <Button variant="contained" color="primary"
-            onClick={(e) => {
+            onClick={async (e) => {
                 setProgress(true)
-                navigator.clipboard.readText()
-                    .then(text => {
-                        let c = text.split('\n').map((el) => {
-                            if(el.includes("->"))
-                                el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2")
-                            return el
-                        })
-                        setValue(c.join('\n'))
-                        setProgress(false)
-                    })
-                    .catch(err => {
-                        alert('Failed to read clipboard contents: ', err);
-                        setProgress(false)
-                    });
+                const text = await navigator.clipboard.readText();
+                let c = text.split('\n').map((el) => {
+                    if(el.includes("->"))
+                        el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2")
+                    return el
+                })
+                setValue(c.join('\n'))
+                setProgress(false)
             }}
             >Paste</Button>
 
