@@ -36,7 +36,7 @@ export default function Copy({ darkState }) {
         <MuiPickersUtilsProvider locale="it" utils={MomentUtils}>
             <h1 className={className(classes.title, "text-6xl font-bold hp")}>
                 Copy
-                <span className="text-primary">Srt</span>
+                <span className="text-primary">Srt-</span>
             </h1>
 
             <Button variant="contained" color="primary"
