@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import {
     makeStyles,
     TextField,
+    CircularProgress,
     Button
 } from "@material-ui/core";
 import {
@@ -29,6 +30,7 @@ export default function Copy({ darkState }) {
     const ref = useRef(null);
 
     const [value, setValue] = React.useState("");
+    const [progress, setProgress] = React.useState(false);
 
     return (
         <MuiPickersUtilsProvider locale="it" utils={MomentUtils}>
@@ -39,6 +41,7 @@ export default function Copy({ darkState }) {
 
             <Button variant="contained" color="primary"
             onClick={(e) => {
+                setProgress(true)
                 navigator.clipboard.readText()
                     .then(text => {
                         let c = text.split('\n').map((el) => {
@@ -46,7 +49,9 @@ export default function Copy({ darkState }) {
                                 el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2")
                             return el
                         })
-                        setValue(c.join('\n'))                    })
+                        setValue(c.join('\n'))
+                        setProgress(false)
+                    })
                     .catch(err => {
                         console.error('Failed to read clipboard contents: ', err);
                     });
@@ -63,6 +68,8 @@ export default function Copy({ darkState }) {
                  element.click();
              }}
             >Download</Button><br/><br/>
+
+            {progress && <CircularProgress />}
 
             {value.split('\n').map((el, key) => {
                 if(parseInt(el) && !el.includes("->"))
