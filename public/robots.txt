@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /docx/
+Sitemap: https://angelk90.github.io/docx/sitemap.xml
