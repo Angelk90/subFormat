@@ -20,3 +20,9 @@ code {
 .webviewer > iframe {
   border-radius: 5px;
 }
+
+#space {
+  display: grid;
+  grid-auto-flow: column;
+  grid-column-gap: 10px;
+}

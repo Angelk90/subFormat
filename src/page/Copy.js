@@ -31,6 +31,7 @@ export default function Copy({ darkState }) {
 
     const [value, setValue] = React.useState("");
     const [progress, setProgress] = React.useState(false);
+    const [name, setName] = React.useState("myFile");
 
     return (
         <MuiPickersUtilsProvider locale="it" utils={MomentUtils}>
@@ -39,7 +40,9 @@ export default function Copy({ darkState }) {
                 <span className="text-primary">Srt</span>
             </h1>
 
-            <Button variant="contained" color="primary"
+            <div id={"space"}>
+                <TextField id="name" label="Name" variant="outlined" defaultValue={name} size={"small"} onChange={({target: { value }}) => setName(value)} />
+                <Button variant="contained" color="primary"
             onClick={async (e) => {
                 setProgress(true)
                 const text = await navigator.clipboard.readText();
@@ -58,11 +61,13 @@ export default function Copy({ darkState }) {
                  const element = document.createElement("a");
                  const file = new Blob([value], {type: 'text/plain'});
                  element.href = URL.createObjectURL(file);
-                 element.download = "myFile.srt";
+                 element.download = name+".srt";
                  document.body.appendChild(element); // Required for this to work in FireFox
                  element.click();
              }}
-            >Download</Button><br/><br/>
+            >Download</Button>
+            </div>
+            <br/><br/>
 
             {progress && <CircularProgress />}
 
