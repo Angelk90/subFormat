@@ -53,6 +53,7 @@ export default function Copy({ darkState }) {
                 })
                 setValue(c.join('\n'))
                 setProgress(false)
+                navigator.clipboard.writeText("")
             }}
             >Paste</Button>
 
