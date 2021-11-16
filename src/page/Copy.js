@@ -46,14 +46,16 @@ export default function Copy({ darkState }) {
             onClick={async (e) => {
                 setProgress(true)
                 const text = await navigator.clipboard.readText();
-                let c = text.split('\n').map((el) => {
-                    if(el.includes("->"))
-                        el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2")
-                    return el
-                })
-                setValue(c.join('\n'))
-                setProgress(false)
-                navigator.clipboard.writeText("")
+                if(text.length > 0) {
+                    let c = text.split('\n').map((el) => {
+                        if (el.includes("->"))
+                            el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2")
+                        return el
+                    })
+                    setValue(c.join('\n'))
+                    setProgress(false)
+                    navigator.clipboard.writeText("")
+                }
             }}
             >Paste</Button>
 
