@@ -41,7 +41,7 @@ export default function Copy({ darkState }) {
             </h1>
 
             <div id={"space"}>
-                <TextField id="name" label="Name" variant="outlined" defaultValue={name} size={"small"} onChange={({target: { value }}) => setName(value)} />
+                <TextField id="name" label="Name file" variant="outlined" defaultValue={name} size={"small"} onChange={({target: { value }}) => setName(value)} />
                 <Button variant="contained" color="primary"
             onClick={async (e) => {
                 setProgress(true)
