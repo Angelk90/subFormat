@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {useState, useEffect, useRef} from "react";
 import {
     makeStyles,
     TextField,
@@ -11,10 +11,10 @@ import {
 import MomentUtils from "@date-io/moment";
 import "moment/locale/it";
 
-import { className } from "../function";
+import {className} from "../function";
 import "../styles/main.css";
 
-export default function Copy({ darkState }) {
+export default function Copy({darkState}) {
     const useStyles = makeStyles((theme) => ({
         title: {
             color: darkState ? "#ffffff" : "#343a40",
@@ -41,51 +41,51 @@ export default function Copy({ darkState }) {
             </h1>
 
             <div id={"space"}>
-                <TextField id="name" label="Name file" variant="outlined" defaultValue={name} size={"small"} onChange={({target: { value }}) => setName(value)} />
-           <Button variant="contained" color="primary"
-            onClick={() => {
-                let num = parseInt(name)+1
-                setName(num)
-            }}
-            >Inc</Button>
-           <Button variant="contained" color="primary"
-            onClick={async (e) => {
-                setProgress(true)
-                const text = await navigator.clipboard.readText();
-                if(text.length > 0) {
-                    let c = text.split('\n').map((el) => {
-                        if (el.includes("->"))
-                            el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2")
-                        return el
-                    })
-                    setValue(c.join('\n'))
-                    setProgress(false)
-                    navigator.clipboard.writeText("")
-                }
-            }}
-            >Paste</Button>
+                <TextField id="name" label="Name file" variant="outlined" defaultValue={name} value={name}
+                           size={"small"} onChange={({target: {value}}) => setName(value)}/>
+                <Button variant="contained" color="primary"
+                        onClick={() => {
+                            setName(parseInt(name) + 1)
+                        }}
+                >Inc</Button>
+                <Button variant="contained" color="primary"
+                        onClick={async (e) => {
+                            setProgress(true)
+                            const text = await navigator.clipboard.readText();
+                            if (text.length > 0) {
+                                let c = text.split('\n').map((el) => {
+                                    if (el.includes("->"))
+                                        el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2")
+                                    return el
+                                })
+                                setValue(c.join('\n'))
+                                setProgress(false)
+                                navigator.clipboard.writeText("")
+                            }
+                        }}
+                >Paste</Button>
 
-            <Button variant="contained" color="primary"
-             onClick={(e) => {
-                 const element = document.createElement("a");
-                 const file = new Blob([value], {type: 'text/plain'});
-                 element.href = URL.createObjectURL(file);
-                 element.download = name+".srt";
-                 document.body.appendChild(element); // Required for this to work in FireFox
-                 element.click();
-             }}
-            >Download</Button>
+                <Button variant="contained" color="primary"
+                        onClick={(e) => {
+                            const element = document.createElement("a");
+                            const file = new Blob([value], {type: 'text/plain'});
+                            element.href = URL.createObjectURL(file);
+                            element.download = name + ".srt";
+                            document.body.appendChild(element); // Required for this to work in FireFox
+                            element.click();
+                        }}
+                >Download</Button>
             </div>
             <br/><br/>
 
-            {progress && <CircularProgress />}
+            {progress && <CircularProgress/>}
 
             {value.split('\n').map((el, key) => {
-                if(parseInt(el) && !el.includes("->"))
-                    return <div key={key} style={{color:"#155e14"}}>{el}</div>
-                else  if(el.includes("->"))
-                    return <div key={key} style={{color:"#e26823"}}>{el}</div>
-                else return <div key={key} style={{color:"#1292d5"}}>{el}</div>
+                if (parseInt(el) && !el.includes("->"))
+                    return <div key={key} style={{color: "#155e14"}}>{el}</div>
+                else if (el.includes("->"))
+                    return <div key={key} style={{color: "#e26823"}}>{el}</div>
+                else return <div key={key} style={{color: "#1292d5"}}>{el}</div>
             })}
 
         </MuiPickersUtilsProvider>
