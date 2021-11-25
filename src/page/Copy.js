@@ -42,7 +42,13 @@ export default function Copy({ darkState }) {
 
             <div id={"space"}>
                 <TextField id="name" label="Name file" variant="outlined" defaultValue={name} size={"small"} onChange={({target: { value }}) => setName(value)} />
-                <Button variant="contained" color="primary"
+           <Button variant="contained" color="primary"
+            onClick={() => {
+                let num = parseInt(name)
+                setName(num)
+            }}
+            >Inc</Button>
+           <Button variant="contained" color="primary"
             onClick={async (e) => {
                 setProgress(true)
                 const text = await navigator.clipboard.readText();
