@@ -44,7 +44,7 @@ export default function Copy({ darkState }) {
                 <TextField id="name" label="Name file" variant="outlined" defaultValue={name} size={"small"} onChange={({target: { value }}) => setName(value)} />
            <Button variant="contained" color="primary"
             onClick={() => {
-                let num = parseInt(name)
+                let num = parseInt(name)+1
                 setName(num)
             }}
             >Inc</Button>
