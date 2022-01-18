@@ -44,6 +44,8 @@ export default function Copy({darkState}) {
             <div id={"space"}>
                 <TextField id="name" label="Name file" variant="outlined" defaultValue={name} value={name}
                            size={"small"} onChange={({target: {value}}) => setName(value)}/>
+                <TextField id="num" label="Num file" variant="outlined" defaultValue={num} value={num}
+                           size={"small"} onChange={({target: {value}}) => setNum(value)}/>
                 <Button variant="contained" color="primary"
                         onClick={() => {
                             let _num = String(parseInt(num) + 1).padStart(2, '0')
