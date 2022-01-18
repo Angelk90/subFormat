@@ -32,6 +32,7 @@ export default function Copy({darkState}) {
     const [value, setValue] = React.useState("");
     const [progress, setProgress] = React.useState(false);
     const [name, setName] = React.useState("myFile");
+    const [num, setNum] = React.useState("01");
 
     return (
         <MuiPickersUtilsProvider locale="it" utils={MomentUtils}>
@@ -45,7 +46,8 @@ export default function Copy({darkState}) {
                            size={"small"} onChange={({target: {value}}) => setName(value)}/>
                 <Button variant="contained" color="primary"
                         onClick={() => {
-                            setName(parseInt(name) + 1)
+                            let _num = String(parseInt(num) + 1).padStart(2, '0')
+                            setNum(_num)
                         }}
                 >Inc</Button>
                 <Button variant="contained" color="primary"
@@ -70,7 +72,7 @@ export default function Copy({darkState}) {
                             const element = document.createElement("a");
                             const file = new Blob([value], {type: 'text/plain'});
                             element.href = URL.createObjectURL(file);
-                            element.download = name + ".srt";
+                            element.download = name + num + ".srt";
                             document.body.appendChild(element); // Required for this to work in FireFox
                             element.click();
                         }}
