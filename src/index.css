@@ -27,7 +27,7 @@ code {
   grid-column-gap: 10px;
 }
 
-@media screen and (max-width: 660px) {
+@media screen and (max-width: 992px) {
   #space {
     display: grid;
     grid-auto-flow: row;

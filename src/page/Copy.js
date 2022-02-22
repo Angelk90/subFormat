@@ -1,17 +1,19 @@
-import React, {useRef} from "react";
+import React from "react";
 import {
     makeStyles,
     TextField,
     CircularProgress,
-    Button, Chip, AccordionSummary, Accordion, Typography, AccordionDetails
+    Button,
+    Chip,
+    AccordionSummary,
+    Accordion,
+    Typography,
+    AccordionDetails
 } from "@material-ui/core";
-import {
-    MuiPickersUtilsProvider
-} from "@material-ui/pickers";
-import {useDropzone} from "react-dropzone";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { useDropzone } from "react-dropzone";
 
 import PizZip from "pizzip";
-import PizZipUtils from "pizzip/utils/index.js";
 import Docxtemplater from "docxtemplater";
 import InspectModule from "docxtemplater/js/inspect-module";
 
@@ -20,14 +22,11 @@ const iModule = InspectModule();
 import MomentUtils from "@date-io/moment";
 import "moment/locale/it";
 
-import {className} from "../function";
+import { className } from "../function";
 import "../styles/main.css";
-import {AttachFile, ExpandMore} from "@material-ui/icons";
+import { AttachFile, ExpandMore } from "@material-ui/icons";
 
-function Dropzone({
-                      multiple = false, onOperation, onDelete = () => {
-    }
-                  }) {
+function Dropzone({ multiple = false, onOperation, onDelete = () => {} }) {
     const [myFile, setMyFile] = React.useState([]);
 
     const onDrop = React.useCallback(
@@ -38,8 +37,9 @@ function Dropzone({
         [myFile, onOperation]
     );
 
-    const {getRootProps, getInputProps} = useDropzone({
-        accept: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    const { getRootProps, getInputProps } = useDropzone({
+        accept:
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         onDrop
     });
 
@@ -47,26 +47,26 @@ function Dropzone({
     const file = myFile.map((file, key) => (
         <Chip
             key={key}
-            icon={<AttachFile/>}
+            icon={<AttachFile />}
             label={`${file.path} - ${file.size} bytes`}
             color="primary"
             onDelete={() => {
                 removeAll();
                 onDelete();
             }}
-            style={{cursor: "pointer"}}
+            style={{ cursor: "pointer" }}
         />
     ));
 
     return (
         <>
-      <span {...getRootProps({className: "drop-zon"})}>
-        {<input {...getInputProps()} multiple={multiple}/>}
+      <span {...getRootProps({ className: "drop-zon" })}>
+        {<input {...getInputProps()} multiple={multiple} />}
           {file.length > 0 ? (
               file
           ) : (
               <Chip
-                  icon={<AttachFile/>}
+                  icon={<AttachFile />}
                   label={"File"}
                   color="primary"
                   style={{
@@ -79,11 +79,12 @@ function Dropzone({
     );
 }
 
-export default function Copy({darkState}) {
+export default function Copy({ darkState }) {
     const useStyles = makeStyles((theme) => ({
         title: {
             color: darkState ? "#ffffff" : "#343a40",
-            textShadow: `3px 3px 2px ${darkState ? "rgba(0, 0, 0, 1)" : "rgba(150, 150, 150, 1)"
+            textShadow: `3px 3px 2px ${
+                darkState ? "rgba(0, 0, 0, 1)" : "rgba(150, 150, 150, 1)"
             }`
         },
         button: {
@@ -91,13 +92,13 @@ export default function Copy({darkState}) {
         },
         heading: {
             fontSize: theme.typography.pxToRem(15),
-            flexBasis: '33.33%',
-            flexShrink: 0,
+            flexBasis: "33.33%",
+            flexShrink: 0
         },
         secondaryHeading: {
             fontSize: theme.typography.pxToRem(15),
-            color: theme.palette.text.secondary,
-        },
+            color: theme.palette.text.secondary
+        }
     }));
     const classes = useStyles();
 
@@ -109,20 +110,21 @@ export default function Copy({darkState}) {
     const showFile = async (files) => {
         const reader = new FileReader();
         reader.onload = async (e) => {
-            setProgress(true)
+            setProgress(true);
             const text = e.target.result;
-            var doc = new Docxtemplater(new PizZip(text), {modules: [iModule], linebreaks: true});
+            var doc = new Docxtemplater(new PizZip(text), {
+                modules: [iModule],
+                linebreaks: true
+            });
             const t = doc.getFullText();
-            console.log(t)
-
             if (t.length > 0) {
-                let c = t.split('\n').map((el) => {
+                let c = t.split("\n").map((el) => {
                     if (el.includes("->"))
-                        el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2")
-                    return el
-                })
-                setValue(c.join('\n'))
-                setProgress(false)
+                        el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2");
+                    return el;
+                });
+                setValue(c.join("\n"));
+                setProgress(false);
             }
         };
         reader.readAsBinaryString(files[0]);
@@ -136,77 +138,120 @@ export default function Copy({darkState}) {
             </h1>
 
             <div id={"space"}>
-                {false && <Dropzone
-                    onOperation={showFile}
-                    onDelete={() => {
-                        setValue("")
+                {false && (
+                    <Dropzone
+                        onOperation={showFile}
+                        onDelete={() => {
+                            setValue("");
+                        }}
+                    />
+                )}
+                <TextField
+                    id="name"
+                    label="Name file"
+                    variant="outlined"
+                    value={name}
+                    size={"small"}
+                    onChange={({ target: { value } }) => setName(value)}
+                />
+                <TextField
+                    id="num"
+                    label="Num file"
+                    variant="outlined"
+                    value={num}
+                    size={"small"}
+                    onChange={({ target: { value } }) => setNum(value)}
+                />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        let _num = String(parseInt(num) + 1).padStart(2, "0");
+                        setNum(_num);
                     }}
-                />}
-                <TextField id="name" label="Name file" variant="outlined" value={name}
-                           size={"small"} onChange={({target: {value}}) => setName(value)}/>
-                <TextField id="num" label="Num file" variant="outlined" value={num}
-                           size={"small"} onChange={({target: {value}}) => setNum(value)}/>
-                <Button variant="contained" color="primary"
-                        onClick={() => {
-                            let _num = String(parseInt(num) + 1).padStart(2, '0')
-                            setNum(_num)
-                        }}
-                >Inc</Button>
-                <Button variant="contained" color="primary"
-                        onClick={async (e) => {
-                            setProgress(true)
-                            const text = await navigator.clipboard.readText();
-                            if (text.length > 0) {
-                                let c = text.split('\n').map((el) => {
-                                    if (el.includes("->"))
-                                        el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2")
-                                    return el
-                                })
-                                setValue(c.join('\n'))
-                                setProgress(false)
-                                navigator.clipboard.writeText("")
-                            }
-                        }}
-                >Paste</Button>
+                >
+                    Inc
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={async (e) => {
+                        setProgress(true);
+                        const text = await navigator.clipboard?.readText();
+                        if (text !== undefined && text.length > 0) {
+                            let c = text.split("\n").map((el) => {
+                                if (el.includes("->"))
+                                    el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2");
+                                return el;
+                            });
+                            setValue(c.join("\n"));
+                            setProgress(false);
+                            navigator.clipboard.writeText("");
+                        } else {
+                            setProgress(false);
+                        }
+                    }}
+                >
+                    Paste
+                </Button>
 
-                <Button variant="contained" color="primary"
-                        onClick={() => {
-                            const element = document.createElement("a");
-                            const file = new Blob([value], {type: 'text/plain'});
-                            element.href = URL.createObjectURL(file);
-                            element.download = name + num + ".srt";
-                            document.body.appendChild(element); // Required for this to work in FireFox
-                            element.click();
-                        }}
-                >Download</Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        const element = document.createElement("a");
+                        const file = new Blob([value], { type: "text/plain" });
+                        element.href = URL.createObjectURL(file);
+                        element.download = name + num + ".srt";
+                        document.body.appendChild(element); // Required for this to work in FireFox
+                        element.click();
+                    }}
+                >
+                    Download
+                </Button>
             </div>
-            <br/>
+            <br />
 
-            {progress && <CircularProgress/>}
+            {progress && (
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center"
+                    }}
+                >
+                    <CircularProgress />
+                </div>
+            )}
 
-            {value.length > 0 && value.split('\n\n').map((el, key) => {
-                let row = el.split('\n')
+            {value.length > 0 &&
+            value.split("\n\n").map((el, key) => {
+                let row = el.split("\n");
                 const num = row.shift();
                 const time = row.shift();
-                return <Accordion>
-                    <AccordionSummary
-                        expandIcon={<ExpandMore/>}
-                        aria-controls="panel1bh-content"
-                        id="panel1bh-header"
-                    >
-                        <Typography className={classes.heading}><span
-                            style={{color: "#155e14"}}>{num}</span> <span
-                            style={{color: "#e26823"}}>({time})</span></Typography>
-                        <Typography className={classes.secondaryHeading}>{row.join('\n')}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <Typography style={{color: "#1292d5"}}>
-                            {row.join('\n')}
-                        </Typography>
-                    </AccordionDetails>
-                </Accordion>
+                return (
+                    <Accordion key={key}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMore />}
+                            aria-controls="panel1bh-content"
+                            id="panel1bh-header"
+                        >
+                            <Typography className={classes.heading}>
+                                <span style={{ color: "#155e14" }}>{num}</span>{" "}
+                                <span style={{ color: "#e26823" }}>({time})</span>
+                            </Typography>
+                            <Typography className={classes.secondaryHeading}>
+                                {row.join("\n")}
+                            </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography style={{ color: "#1292d5" }}>
+                                {row.join("\n")}
+                            </Typography>
+                        </AccordionDetails>
+                    </Accordion>
+                );
             })}
-
         </MuiPickersUtilsProvider>
     );
 }
