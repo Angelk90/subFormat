@@ -12,7 +12,7 @@
     "@testing-library/user-event": "^7.1.2",
     "docxtemplater": "^3.29.0",
     "file-saver": "2.0.5",
-    "lodash": "4.17.21",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "pizzip": "^3.1.1",
     "postcss": "^8.4.7",
