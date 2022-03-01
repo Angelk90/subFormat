@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { useDropzone } from "react-dropzone";
+import { ReactGhLikeDiff } from "react-gh-like-diff";
 
 import PizZip from "pizzip";
 import Docxtemplater from "docxtemplater";
@@ -21,12 +22,13 @@ const iModule = InspectModule();
 
 import MomentUtils from "@date-io/moment";
 import "moment/locale/it";
+import "react-gh-like-diff/dist/css/diff2html.min.css";
 
 import { className } from "../function";
 import "../styles/main.css";
 import { AttachFile, ExpandMore } from "@material-ui/icons";
 
-function Dropzone({ multiple = false, onOperation, onDelete = () => {} }) {
+function Dropzone({ multiple = false, onOperation, onDelete = () => { } }) {
     const [myFile, setMyFile] = React.useState([]);
 
     const onDrop = React.useCallback(
@@ -83,8 +85,7 @@ export default function Copy({ darkState }) {
     const useStyles = makeStyles((theme) => ({
         title: {
             color: darkState ? "#ffffff" : "#343a40",
-            textShadow: `3px 3px 2px ${
-                darkState ? "rgba(0, 0, 0, 1)" : "rgba(150, 150, 150, 1)"
+            textShadow: `3px 3px 2px ${darkState ? "rgba(0, 0, 0, 1)" : "rgba(150, 150, 150, 1)"
             }`
         },
         button: {
@@ -102,6 +103,7 @@ export default function Copy({ darkState }) {
     }));
     const classes = useStyles();
 
+    const [original, setOriginal] = React.useState("");
     const [value, setValue] = React.useState("");
     const [progress, setProgress] = React.useState(false);
     const [name, setName] = React.useState("myFile");
@@ -179,6 +181,7 @@ export default function Copy({ darkState }) {
                         setProgress(true);
                         const text = await navigator.clipboard?.readText();
                         if (text !== undefined && text.length > 0) {
+                            setOriginal(text)
                             let c = text.split("\n").map((el) => {
                                 if (el.includes("->"))
                                     el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2");
@@ -223,6 +226,16 @@ export default function Copy({ darkState }) {
                     <CircularProgress />
                 </div>
             )}
+
+            {value.length > 0 &&
+                <ReactGhLikeDiff
+                options={{
+                    originalFileName: name + num,
+                    updatedFileName: name + num,
+                }}
+                past={original}
+                current={value}
+            />}
 
             {value.length > 0 &&
             value.split("\n\n").map((el, key) => {
