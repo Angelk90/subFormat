@@ -227,15 +227,14 @@ export default function Copy({ darkState }) {
                 </div>
             )}
 
-            {value.length > 0 &&
                 <ReactGhLikeDiff
                 options={{
                     originalFileName: name + num,
                     updatedFileName: name + num,
                 }}
-                past={original}
-                current={value}
-            />}
+                past={"Test"}
+                current={"Ok"}
+            />
 
             {value.length > 0 &&
             value.split("\n\n").map((el, key) => {
