@@ -233,7 +233,7 @@ export default function Copy({ darkState }) {
                     updatedFileName: name + num,
                 }}
                 past={"Test"}
-                current={"Ok"}
+                current={"Ok."}
             />
 
             {value.length > 0 &&
