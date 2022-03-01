@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /react-diff-package/
+Sitemap: https://gaetanozappi.github.io/react-diff-package/sitemap.xml

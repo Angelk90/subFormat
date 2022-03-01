@@ -15,7 +15,7 @@ body {
 }
 
 .App-header {
-//background-color: #282c34;
+  //background-color: #282c34;
   background-color: #ffffff;
   min-height: 100vh;
   display: flex;
@@ -52,25 +52,25 @@ button:focus {
 }
 
 .text-primary {
-  color: #2196f3 !important;
+    color: #2196f3 !important;
 }
 
 .sub-heading {
-  font-weight: 600;
-  font-family: 'Saira Extra Condensed',serif;
-  font-size: 1.35rem;
+    font-weight: 600;
+    font-family: 'Saira Extra Condensed',serif;
+    font-size: 1.35rem;
 }
 
 .list-icons {
-  font-size: 2rem;
+    font-size: 2rem;
 }
 
 .list-inline-item:not(:last-child) {
-  margin-right: 2rem;
+    margin-right: 2rem;
 }
 
 .list-inline-item {
-  display: inline-block;
+    display: inline-block;
 }
 
 .list-inline-item > i:hover {
@@ -79,15 +79,14 @@ button:focus {
 }
 
 .underline__text:hover {
-  transition: .5s cubic-bezier(.645,.045,.355,1);
-  background-size: 100% 100%;
+    transition: .5s cubic-bezier(.645,.045,.355,1);
+    background-size: 100% 100%;
 }
 
 .underline__text {
-  line-height: 1;
-  display: inline;
-  background-image: linear-gradient(transparent 50%,#ffc107 50%,#ffc107 85%,transparent 85%,transparent 100%);
-  background-repeat: no-repeat;
-  background-size: 0 100%;
+    line-height: 1;
+    display: inline;
+    background-image: linear-gradient(transparent 50%,#ffc107 50%,#ffc107 85%,transparent 85%,transparent 100%);
+    background-repeat: no-repeat;
+    background-size: 0 100%;
 }
-
