@@ -1,0 +1,19 @@
+.d2h-code-line-ctn {
+  color: #032f62;
+}
+
+.d2h-file-diff .d2h-del.d2h-change {
+  background-color: #fde8e8;
+}
+
+.d2h-lines-deleted {
+  margin-left: -1px;
+}
+
+.d2h-file-stats > span {
+  padding: 4px;
+}
+
+.drop-zone2:focus {
+    outline: none;
+}

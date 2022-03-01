@@ -3,9 +3,12 @@ import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { className } from "../function";
 import "../styles/main.css";
+import {ReactGhLikeDiff} from "react-gh-like-diff";
+import "react-gh-like-diff/dist/css/diff2html.min.css";
+import "../styles/styles.css";
 
 export default function Error({ darkState }) {
-    const useStyles = makeStyles((theme) => ({
+    const useStyles = makeStyles(() => ({
         title: {
             color: darkState ? "#ffffff" : "#343a40",
             textShadow: `3px 3px 2px ${
@@ -20,6 +23,15 @@ export default function Error({ darkState }) {
             <Typography paragraph variant="h5" color="textSecondary">
                 We are sorry but we could not find the page you are looking.
             </Typography>
+            <ReactGhLikeDiff
+                options={{
+                    originalFileName: "fileName",
+                    updatedFileName: "s",
+                    outputFormat:  'side-by-side'
+                }}
+                past={"ciao\nciao"}
+                current={"ss"}
+            />
         </div>
     );
 }

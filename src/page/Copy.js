@@ -10,21 +10,16 @@ import {
     Typography,
     AccordionDetails
 } from "@material-ui/core";
-import {MuiPickersUtilsProvider} from "@material-ui/pickers";
 import {useDropzone} from "react-dropzone";
-import {ReactGhLikeDiff} from "react-gh-like-diff";
 
 import PizZip from "pizzip";
 import Docxtemplater from "docxtemplater";
 import InspectModule from "docxtemplater/js/inspect-module";
 
-import MomentUtils from "@date-io/moment";
-
 import {className} from "../function";
 import {AttachFile, ExpandMore} from "@material-ui/icons";
 
 import "moment/locale/it";
-import "react-gh-like-diff/dist/css/diff2html.min.css";
 import "../styles/main.css";
 
 const iModule = InspectModule();
@@ -137,7 +132,7 @@ export default function Copy({darkState}) {
     };
 
     return (
-        <MuiPickersUtilsProvider locale="it" utils={MomentUtils}>
+        <>
             <h1 className={className(classes.title, "text-6xl font-bold hp")}>
                 Copy
                 <span className="text-primary">Srt</span>
@@ -231,15 +226,7 @@ export default function Copy({darkState}) {
                 </div>
             )}
 
-            <ReactGhLikeDiff
-                options={{
-                    originalFileName: name + num,
-                    updatedFileName: name + num,
-                }}
-                current={"Ok."}
-            />
-
-            {value.length > 0 &&
+            {false && value.length > 0 &&
                 value.split("\n\n").map((el, key) => {
                     let row = el.split("\n");
                     const num = row.shift();
@@ -267,6 +254,6 @@ export default function Copy({darkState}) {
                         </Accordion>
                     );
                 })}
-        </MuiPickersUtilsProvider>
+        </>
     );
 }
