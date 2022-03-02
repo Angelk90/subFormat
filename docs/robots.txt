@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /subFormat/
+Sitemap: https://angelk90.github.io/subFormat/sitemap.xml

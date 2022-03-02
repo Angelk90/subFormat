@@ -1,6 +1,6 @@
 {
-  "short_name": "docx",
-  "name": "docx",
+  "short_name": "subFormat",
+  "name": "subFormat",
   "icons": [
     {
       "src": "favicon.ico",
