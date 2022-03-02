@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
-        <loc>https://gaetanozappi.github.io/react-diff-package/</loc>
+        <loc>https://angelk90.github.io/subFormat/</loc>
         <xhtml:link
             rel="alternate"
             hreflang="en"
-            href="http://gaetanozappi.github.io/react-diff-package/en/"
+            href="https://angelk90.github.io/subFormat//en/"
         />
         <xhtml:link
             rel="alternate"
             hreflang="it"
-            href="https://gaetanozappi.github.io/react-diff-package/"
+            href="https://angelk90.github.io/subFormat/"
         />
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://gaetanozappi.github.io/react-diff-package/en/</loc>
+        <loc>https://angelk90.github.io/subFormat/en/</loc>
         <xhtml:link
             rel="alternate"
             hreflang="it"
-            href="https://gaetanozappi.github.io/react-diff-package/"
+            href="https://angelk90.github.io/subFormat/"
         />
         <xhtml:link
             rel="alternate"
             hreflang="en"
-            href="https://gaetanozappi.github.io/react-diff-package/en/"
+            href="https://angelk90.github.io/subFormat/en/"
         />
         <priority>1.0</priority>
     </url>
