@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Switch, Route, Link, useLocation } from "react-router-dom";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import {
   AppBar,
   CssBaseline,
@@ -216,13 +216,13 @@ function App(props) {
           </nav>
           <main className={classes.content}>
             <div className={classes.toolbar} />
-            <Switch>
+            <Routes>
               {routeObj.map(({ path, obj }, key) => (
-                  <Route exact path={`/${path}`} component={() => obj} key={key} />
+                  <Route exact path={`/${path}`} element={obj} key={key} />
               ))}
-              <Route path={`/lib`} component={() => <div>ciao</div>} />
-              <Route component={() => <Error darkState={darkState} />} />
-            </Switch>
+              <Route path={`/lib`} element={() => <div>Hi!</div>} />
+              <Route element={() => <Error darkState={darkState} />} />
+            </Routes>
           </main>
         </div>
       </ThemeProvider>
