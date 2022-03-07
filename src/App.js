@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Routes, Route, Link, useLocation } from "react-router-dom";
+import { Route, Link, useLocation, Routes } from "react-router-dom";
 import {
   AppBar,
   CssBaseline,

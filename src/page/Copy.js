@@ -13,8 +13,6 @@ import {
 import {useDropzone} from "react-dropzone";
 
 import PizZip from "pizzip";
-import Docxtemplater from "docxtemplater";
-import InspectModule from "docxtemplater/js/inspect-module";
 
 import {className} from "../function";
 import {AttachFile, ExpandMore} from "@material-ui/icons";
@@ -24,7 +22,7 @@ import "react-gh-like-diff/dist/css/diff2html.min.css";
 import "../styles/styles.css";
 import {ReactGhLikeDiff} from "react-gh-like-diff";
 
-const iModule = InspectModule();
+const { DOMParser } = require("@xmldom/xmldom");
 
 function Dropzone({
                     multiple = false, onOperation, onDelete = () => {
@@ -110,94 +108,115 @@ export default function Copy({darkState}) {
   const [name, setName] = React.useState("myFile");
   const [num, setNum] = React.useState("01");
 
-  const showFile = async (files) => {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      setProgress(true);
-      const text = e.target.result;
-      var doc = new Docxtemplater(new PizZip(text), {
-        modules: [iModule],
-        linebreaks: true
-      });
-      const t = doc.getFullText();
-      if (t.length > 0) {
-        let c = t.split("\n").map((el) => {
-          if (el.includes("->"))
-            el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2");
-          return el;
-        });
-        setValue(c.join("\n"));
-        setProgress(false);
-      }
-    };
-    reader.readAsBinaryString(files[0]);
-  };
-
-  return (
-      <>
-        <h1 className={className(classes.title, "text-6xl font-bold hp")}>
-          Copy
-          <span className="text-primary">Srt</span>
-        </h1>
-
-        <div id={"space"}>
-          {false && (
-              <Dropzone
-                  onOperation={showFile}
-                  onDelete={() => {
-                    setValue("");
-                  }}
-              />
-          )}
-          <TextField
-              id="name"
-              label="Name file"
-              variant="outlined"
-              value={name}
-              size={"small"}
-              onChange={({target: {value}}) => setName(value)}
-          />
-          <TextField
-              id="num"
-              label="Num file"
-              variant="outlined"
-              value={num}
-              size={"small"}
-              onChange={({target: {value}}) => setNum(value)}
-          />
-          <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                let _num = String(parseInt(num) + 1).padStart(2, "0");
-                setNum(_num);
-              }}
-          >
-            Inc
-          </Button>
-          <Button
-              variant="contained"
-              color="primary"
-              onClick={async (e) => {
-                setProgress(true);
-                const text = await navigator.clipboard?.readText();
-                if (text !== undefined && text.length > 0) {
-                  setOriginal(text)
-                  let c = text.split("\n").map((el) => {
-                    if (el.includes("->"))
-                      el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2");
-                    return el;
-                  });
-                  setValue(c.join("\n"));
-                  setProgress(false);
-                  navigator.clipboard.writeText("");
-                } else {
-                  setProgress(false);
+    const showFile = async (files) => {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            setProgress(true);
+            const text = e.target.result;
+            const zip = new PizZip(text);
+            const xml = str2xml(zip.files["word/document.xml"].asText());
+            const paragraphsXml = xml.getElementsByTagName("w:p");
+            const paragraphs = [];
+            for (let i = 0, len = paragraphsXml.length; i < len; i++) {
+                let fullText = "";
+                const textsXml = paragraphsXml[i].getElementsByTagName("w:t");
+                for (let j = 0, len2 = textsXml.length; j < len2; j++) {
+                    const textXml = textsXml[j];
+                    if (textXml.childNodes) {
+                        fullText += (textXml.childNodes[0]?.nodeValue) || "";
+                    }
                 }
-              }}
-          >
-            Paste
-          </Button>
+
+                paragraphs.push(fullText);
+            }
+
+            setOriginal(paragraphs.join("\n"));
+
+            if (paragraphs.length > 0) {
+                let c = paragraphs.map((el) => {
+                    if (el.includes("->"))
+                        el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2");
+                    return el;
+                });
+                setValue(c.join("\n"));
+                setProgress(false);
+            }
+
+            console.log(paragraphs);
+        };
+        reader.readAsBinaryString(files[0]);
+    };
+
+    function str2xml(str) {
+        if (str.charCodeAt(0) === 65279) str = str.substr(1);
+        return new DOMParser().parseFromString(str, "text/xml");
+    }
+
+    return (
+        <>
+            <h1 className={className(classes.title, "text-6xl font-bold hp")}>
+                Copy
+                <span className="text-primary">Srt</span>
+            </h1>
+
+            <div id={"space"}>
+
+                    <Dropzone
+                        onOperation={showFile}
+                        onDelete={() => {
+                            setValue("");
+                        }}
+                    />
+
+                <TextField
+                    id="name"
+                    label="Name file"
+                    variant="outlined"
+                    value={name}
+                    size={"small"}
+                    onChange={({target: {value}}) => setName(value)}
+                />
+                <TextField
+                    id="num"
+                    label="Num file"
+                    variant="outlined"
+                    value={num}
+                    size={"small"}
+                    onChange={({target: {value}}) => setNum(value)}
+                />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        let _num = String(parseInt(num) + 1).padStart(2, "0");
+                        setNum(_num);
+                    }}
+                >
+                    Inc
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={async (e) => {
+                        setProgress(true);
+                        const text = await navigator.clipboard?.readText();
+                        if (text !== undefined && text.length > 0) {
+                            setOriginal(text)
+                            let c = text.split("\n").map((el) => {
+                                if (el.includes("->"))
+                                    el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2");
+                                return el;
+                            });
+                            setValue(c.join("\n"));
+                            setProgress(false);
+                            navigator.clipboard.writeText("");
+                        } else {
+                            setProgress(false);
+                        }
+                    }}
+                >
+                    Paste
+                </Button>
 
           <Button
               variant="contained"
