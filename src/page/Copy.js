@@ -1,19 +1,19 @@
 import React from "react";
 import {
-    makeStyles,
-    TextField,
-    CircularProgress,
-    Button,
-    Chip,
-    AccordionSummary,
     Accordion,
-    Typography,
-    AccordionDetails
-} from "@material-ui/core";
-import {AttachFile, ExpandMore} from "@material-ui/icons";
+    AccordionDetails,
+    AccordionSummary,
+    Button, Checkbox,
+    Chip,
+    CircularProgress, Divider, IconButton, InputBase, Paper,
+    Typography
+} from "@mui/material";
+import { Add, AttachFile, Bookmark, BookmarkBorder, ExpandMore } from "@mui/icons-material";
+import { makeStyles } from "@mui/styles";
 import { ReactGhLikeDiff } from "react-gh-like-diff";
 import { useDropzone } from "react-dropzone";
 import PizZip from "pizzip";
+import { DOMParser } from '@xmldom/xmldom'
 
 import { className } from "../function";
 
@@ -21,11 +21,9 @@ import "react-gh-like-diff/dist/css/diff2html.min.css";
 import "../styles/main.css";
 import "../styles/styles.css";
 
-const { DOMParser } = require("@xmldom/xmldom");
-
 function Dropzone({
                       multiple = false, onOperation, onDelete = () => {
-    }
+    }, files = (files) => { }
                   }) {
     const [myFile, setMyFile] = React.useState([]);
 
@@ -33,6 +31,7 @@ function Dropzone({
         (acceptedFiles) => {
             setMyFile([...acceptedFiles]);
             onOperation(acceptedFiles);
+            files([...acceptedFiles])
         },
         [myFile, onOperation]
     );
@@ -106,13 +105,12 @@ export default function Copy({ darkState }) {
     const [progress, setProgress] = React.useState(false);
     const [name, setName] = React.useState("myFile");
     const [num, setNum] = React.useState("01");
+    const [checked, setChecked] = React.useState(true);
 
     const showFile = async (files) => {
         const reader = new FileReader();
+        setProgress(true);
         reader.onload = async (e) => {
-            setProgress(true);
-            setName("aa")
-            setNum("")
 
             const text = e.target.result;
             const zip = new PizZip(text);
@@ -174,8 +172,14 @@ export default function Copy({ darkState }) {
                 <span className="text-primary">Srt</span>
             </h1>
 
-            <div id={"space"}>
-
+            <div id={"spaces"}>
+                <Checkbox
+                    {...{ inputProps: { 'aria-label': 'Checkbox' } }}
+                    checked={checked}
+                    icon={<BookmarkBorder />}
+                    checkedIcon={<Bookmark />}
+                    onChange={({ target: { checked } }) => setChecked(checked)}
+                />
                 <Dropzone
                     onOperation={showFile}
                     onDelete={() => {
@@ -183,72 +187,80 @@ export default function Copy({ darkState }) {
                         setName("myFile")
                         setNum("01")
                     }}
-                />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={async (e) => {
-                        setProgress(true);
-                        const text = await navigator.clipboard?.readText();
-                        if (text !== undefined && text.length > 0) {
-                            setOriginal(text)
-                            let c = text.split("\n").map((el) => {
-                                if (el.includes("->"))
-                                    el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2");
-                                return el;
-                            });
-                            setValue(c.join("\n"));
-                            setProgress(false);
-                            navigator.clipboard.writeText("");
-                        } else {
-                            setProgress(false);
+                    files={(files) => {
+                        if (checked) {
+                            setName(files[0].name.split('.').slice(0, -1).join('.'))
+                            setNum("")
                         }
                     }}
-                >
-                    Paste
-                </Button>
-
-                <TextField
-                    id="name"
-                    label="Name file"
-                    variant="outlined"
-                    value={name}
-                    size={"small"}
-                    onChange={({ target: { value } }) => setName(value)}
                 />
-                <TextField
-                    id="num"
-                    label="Num file"
-                    variant="outlined"
-                    value={num}
-                    size={"small"}
-                    onChange={({ target: { value } }) => setNum(value)}
-                />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                        let _num = String(parseInt(num) + 1).padStart(2, "0");
-                        setNum(_num);
-                    }}
-                >
-                    Inc
-                </Button>
+                <br /><br />
 
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                        const element = document.createElement("a");
-                        const file = new Blob([value], { type: "text/plain" });
-                        element.href = URL.createObjectURL(file);
-                        element.download = name + num + ".srt";
-                        document.body.appendChild(element); // Required for this to work in FireFox
-                        element.click();
-                    }}
+                <Paper
+                    component="form"
+                    sx={{ p: '2px 4px', display: 'flex', alignItems: 'center' }}
                 >
-                    Download
-                </Button>
+
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={async (e) => {
+                            setProgress(true);
+                            const text = await navigator.clipboard?.readText();
+                            if (text !== undefined && text.length > 0) {
+                                setOriginal(text)
+                                let c = text.split("\n").map((el) => {
+                                    if (el.includes("->"))
+                                        el = el.replace(/\b(\d\d:\d\d:\d\d)\.(\d\d\d)\b/g, "$1,$2");
+                                    return el;
+                                });
+                                setValue(c.join("\n"));
+                                setProgress(false);
+                                navigator.clipboard.writeText("");
+                            } else {
+                                setProgress(false);
+                            }
+                        }}
+                    >
+                        Paste
+                    </Button>
+                    <InputBase
+                        sx={{ ml: 1, flex: 1 }}
+                        placeholder="Name file"
+                        inputProps={{ 'aria-label': 'search google maps' }}
+                        value={name}
+                        onChange={({ target: { value } }) => setName(value)}
+                    />
+                    <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                    <InputBase
+                        sx={{ ml: 1, flex: 1 }}
+                        placeholder="Num file"
+                        inputProps={{ 'aria-label': 'search google maps' }}
+                        value={num}
+                        onChange={({ target: { value } }) => setNum(value)}
+                    />
+                    <IconButton color="primary" sx={{ p: '10px' }} aria-label="directions">
+                        <Add onClick={() => {
+                            let _num = String(parseInt(num) + 1).padStart(2, "0");
+                            setNum(_num);
+                        }} />
+                    </IconButton>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                            const element = document.createElement("a");
+                            const file = new Blob([value], { type: "text/plain" });
+                            element.href = URL.createObjectURL(file);
+                            element.download = name + num + ".srt";
+                            document.body.appendChild(element); // Required for this to work in FireFox
+                            element.click();
+                        }}
+                    >
+                        Download
+                    </Button>
+                </Paper>
+
             </div>
             <br />
 

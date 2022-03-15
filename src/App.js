@@ -1,8 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Route, Link, useLocation, Routes } from "react-router-dom";
+import { Copy, Error } from "./page";
+
+import DarkModeToggle from "react-dark-mode-toggle";
+import "./styles/main.css";
+import "./App.css";
 import {
   AppBar,
+  Box,
+  Chip,
+  createTheme,
   CssBaseline,
   Drawer,
   Hidden,
@@ -11,43 +19,24 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  ThemeProvider,
   Toolbar,
-  Chip
-} from "@material-ui/core";
-import {
-  GTranslate,
-  Menu,
-} from "@material-ui/icons";
-import {
-  makeStyles,
-  useTheme,
-  createMuiTheme,
-  ThemeProvider
-} from "@material-ui/core/styles";
-import { blue, grey } from "@material-ui/core/colors";
-import DarkModeToggle from "react-dark-mode-toggle";
-import { Copy, Error } from "./page";
-import "./styles/main.css";
-import "./App.css";
+  useTheme
+} from "@mui/material";
+import { GTranslate, Menu } from "@mui/icons-material";
+import { makeStyles } from "@mui/styles";
+import { blue, grey } from "@mui/material/colors";
 
 const drawerWidth = 240;
 
-function App(props) {
-  const { wind } = props;
-  const container = wind !== undefined ? () => wind().document.body : undefined;
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const localDark = localStorage.getItem("dark");
-  const isDark = localDark === null ? prefersDark : localDark === "true";
-
-  let location = useLocation();
-  let pathname = location.pathname.replace("/", "");
-  if (pathname === "") pathname = "docx";
-
-  const [state, setState] = React.useState({
-    mobileOpen: false,
-    darkState: isDark
-  });
-  const { mobileOpen, darkState } = state;
+const AppInner = ({ mobileOpen, darkState, setState, pathname, container }) => {
+  const handleDrawerToggle = () =>
+      setState((prev) => ({ ...prev, mobileOpen: !mobileOpen }));
+  const changePage = (page) => setState((prev) => ({ ...prev, page }));
+  const handleThemeChange = React.useCallback(() => {
+    localStorage.setItem("dark", !darkState);
+    setState((prev) => ({ ...prev, darkState: !prev.darkState }));
+  }, []);
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -81,42 +70,19 @@ function App(props) {
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(3)
+      padding: theme.spacing(3),
+      backgroundColor: !darkState ? grey[50] : grey[800]
     }
   }));
 
-  const palletType = darkState ? "dark" : "light";
-  const mainPrimaryColor = darkState ? grey[900] : blue[500];
-  const mainSecondaryColor = darkState ? grey[800] : blue[300];
-  const darkTheme = createMuiTheme({
-    palette: {
-      type: palletType,
-      primary: {
-        main: mainPrimaryColor
-      },
-      secondary: {
-        main: mainSecondaryColor
-      }
-    }
-  });
-
   const classes = useStyles();
   const theme = useTheme();
-  const handleDrawerToggle = () =>
-      setState((prev) => ({ ...prev, mobileOpen: !mobileOpen }));
-  const changePage = (page) => setState((prev) => ({ ...prev, page }));
-  const handleThemeChange = React.useCallback(() => {
-    localStorage.setItem("dark", !darkState);
-    setState((prev) => ({ ...prev, darkState: !prev.darkState }));
-  }, []);
 
-  const menu = [
-    { title: "Copy Srt", path: "docx", icon: <GTranslate />}
-  ];
+  const menu = [{ title: "Copy Srt", path: "docx", icon: <GTranslate /> }];
 
   const routeObj = [
     { path: "/", obj: <Copy darkState={darkState} /> },
-    { path: "copy", obj: <Copy darkState={darkState} /> },
+    { path: "copy", obj: <Copy darkState={darkState} /> }
   ];
 
   const drawer = (
@@ -152,79 +118,140 @@ function App(props) {
   );
 
   return (
-      <ThemeProvider theme={darkTheme}>
-        <div className={classes.root}>
-          <CssBaseline />
-          <AppBar
-              position="fixed"
-              className={classes.appBar}
-              style={{
-                backgroundColor: darkState ? "#303030" : grey[50],
-                boxShadow: "none"
+      <Box sx={{ display: "flex" }}>
+        <CssBaseline />
+        <AppBar
+            position="fixed"
+            sx={{
+              width: { sm: `calc(100% - ${drawerWidth}px)` },
+              ml: { sm: `${drawerWidth}px` }
+            }}
+            className={classes.appBar}
+            style={{
+              backgroundColor: darkState ? grey[800] : grey[50],
+              boxShadow: "none"
+            }}
+        >
+          <Toolbar className={"shadow-none"}>
+            <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ mr: 2, display: { sm: "none" } }}
+                className={classes.menuButton}
+            >
+              <Menu />
+            </IconButton>
+            <div className="ml-auto text-right flex">
+              <DarkModeToggle
+                  onChange={handleThemeChange}
+                  checked={darkState}
+                  size={60}
+              />
+            </div>
+          </Toolbar>
+        </AppBar>
+        {false && <>
+        <Box
+            component="nav"
+            sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+            aria-label="mailbox folders"
+        >
+          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+          <Drawer
+              container={container}
+              variant="temporary"
+              open={mobileOpen}
+              onClose={handleDrawerToggle}
+              ModalProps={{
+                keepMounted: true // Better open performance on mobile.
+              }}
+              sx={{
+                display: { xs: "block", sm: "none" },
+                "& .MuiDrawer-paper": {
+                  boxSizing: "border-box",
+                  width: drawerWidth,
+                  backgroundColor: darkState ? grey[900] : blue[500]
+                }
               }}
           >
-            <Toolbar className={"shadow-none"}>
-              <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  edge="start"
-                  onClick={handleDrawerToggle}
-                  className={classes.menuButton}
-              >
-                <Menu />
-              </IconButton>
-              <div className="ml-auto text-right flex">
-                <DarkModeToggle
-                    onChange={handleThemeChange}
-                    checked={darkState}
-                    size={60}
-                />
-              </div>
-            </Toolbar>
-          </AppBar>
+            {drawer}
+          </Drawer>
+          <Drawer
+              variant="permanent"
+              sx={{
+                display: { xs: "none", sm: "block" },
+                "& .MuiDrawer-paper": {
+                  boxSizing: "border-box",
+                  width: drawerWidth,
+                  backgroundColor: darkState ? grey[900] : blue[500]
+                }
+              }}
+              open
+          >
+            {drawer}
+          </Drawer>
+        </Box></>}
 
-          <nav className={classes.drawer} aria-label="mailbox folders">
-            {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-            <Hidden mdUp implementation="css">
-              <Drawer
-                  container={container}
-                  variant="temporary"
-                  anchor={theme.direction === "rtl" ? "right" : "left"}
-                  open={mobileOpen}
-                  onClose={handleDrawerToggle}
-                  classes={{
-                    paper: classes.drawerPaper
-                  }}
-                  ModalProps={{
-                    keepMounted: true // Better open performance on mobile.
-                  }}
-              >
-                {drawer}
-              </Drawer>
-            </Hidden>
-            <Hidden mdDown implementation="css">
-              <Drawer
-                  classes={{
-                    paper: classes.drawerPaper
-                  }}
-                  variant="permanent"
-                  open
-              >
-                {drawer}
-              </Drawer>
-            </Hidden>
-          </nav>
-          <main className={classes.content}>
-            <div className={classes.toolbar} />
-            <Routes>
-              {routeObj.map(({ path, obj }, key) => (
-                  <Route exact path={`/${path}`} element={obj} key={key} />
-              ))}
-              <Route path={`/lib`} element={() => <div>Hi!</div>} />
-              <Route element={() => <Error darkState={darkState} />} />
-            </Routes>
-          </main>
-        </div>
+        <Box
+            component="main"
+            sx={{
+              flexGrow: 1,
+              p: 3,
+              width: { sm: `calc(100% - ${drawerWidth}px)` },
+                height: '100vh',
+                backgroundColor: darkState ? grey[800] : grey[50],
+            }}
+        >
+          <Toolbar />
+          <Routes>
+            {routeObj.map(({ path, obj }, key) => (
+                <Route exact path={`/${path}`} element={obj} key={key} />
+            ))}
+            <Route path={`/lib`} element={() => <div>Hi!</div>} />
+            <Route element={() => <Error darkState={darkState} />} />
+          </Routes>
+        </Box>
+      </Box>
+  );
+};
+
+function App(props) {
+  const { wind } = props;
+  const container = wind !== undefined ? () => wind().document.body : undefined;
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const localDark = localStorage.getItem("dark");
+  const isDark = localDark === null ? prefersDark : localDark === "true";
+
+  let location = useLocation();
+  let pathname = location.pathname.replace("/", "");
+  if (pathname === "") pathname = "docx";
+
+  const [state, setState] = React.useState({
+    mobileOpen: false,
+    darkState: isDark
+  });
+  const { mobileOpen, darkState } = state;
+
+  const palletType = darkState ? "dark" : "light";
+  const mainPrimaryColor = darkState ? grey[900] : blue[500];
+  const mainSecondaryColor = darkState ? grey[800] : blue[300];
+  const darkTheme = createTheme({
+    palette: {
+      type: palletType,
+      primary: {
+        main: mainPrimaryColor
+      },
+      secondary: {
+        main: mainSecondaryColor
+      }
+    }
+  });
+
+  return (
+      <ThemeProvider theme={darkTheme}>
+        <AppInner {...{ mobileOpen, darkState, setState, pathname, container }} />
       </ThemeProvider>
   );
 }
