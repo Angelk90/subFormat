@@ -2,14 +2,14 @@ import React from "react";
 import {
     Accordion,
     AccordionDetails,
-    AccordionSummary,
+    AccordionSummary, Box,
     Button, Checkbox,
     Chip,
     CircularProgress, Divider, IconButton, InputBase, Paper,
-    Typography
+    Typography, useMediaQuery
 } from "@mui/material";
 import { Add, AttachFile, Bookmark, BookmarkBorder, ExpandMore } from "@mui/icons-material";
-import { makeStyles } from "@mui/styles";
+import {makeStyles, useTheme} from "@mui/styles";
 import { ReactGhLikeDiff } from "react-gh-like-diff";
 import { useDropzone } from "react-dropzone";
 import PizZip from "pizzip";
@@ -98,6 +98,9 @@ export default function Copy({ darkState }) {
             color: theme.palette.text.secondary
         }
     }));
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
+    console.log(isMobile)
     const classes = useStyles();
 
     const [original, setOriginal] = React.useState("");
@@ -198,9 +201,16 @@ export default function Copy({ darkState }) {
 
                 <Paper
                     component="form"
-                    sx={{ p: '2px 4px', display: 'flex', alignItems: 'center' }}
+                    sx={{ width: isMobile ? "100%" : 500, p: '2px 4px' }}
                 >
-
+                    <Box
+                        sx={{
+                            p: "2px 4px",
+                            display: "flex",
+                            flexDirection: isMobile ? "column" : "row",
+                            alignItems: isMobile ? "initial" : "center"
+                        }}
+                    >
                     <Button
                         variant="contained"
                         color="primary"
@@ -230,14 +240,20 @@ export default function Copy({ darkState }) {
                         inputProps={{ 'aria-label': 'search google maps' }}
                         value={name}
                         onChange={({ target: { value } }) => setName(value)}
+                        fullWidth
                     />
-                    <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                    <InputBase
+                        {isMobile ? (
+                            <Divider sx={{ m: 0.5 }} />
+                        ) : (
+                            <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                        )}
+                        <InputBase
                         sx={{ ml: 1, flex: 1 }}
                         placeholder="Num file"
                         inputProps={{ 'aria-label': 'search google maps' }}
                         value={num}
                         onChange={({ target: { value } }) => setNum(value)}
+                        fullWidth
                     />
                     <IconButton color="primary" sx={{ p: '10px' }} aria-label="directions">
                         <Add onClick={() => {
@@ -245,6 +261,9 @@ export default function Copy({ darkState }) {
                             setNum(_num);
                         }} />
                     </IconButton>
+                        {isMobile && (
+                            <Divider sx={{ m: 0.5 }} />
+                        )}
                     <Button
                         variant="contained"
                         color="primary"
@@ -259,6 +278,7 @@ export default function Copy({ darkState }) {
                     >
                         Download
                     </Button>
+                    </Box>
                 </Paper>
 
             </div>
